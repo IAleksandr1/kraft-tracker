@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Unbounded", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background-color: #EAE8E2;
+  color: #161513;
+  font-family: var(--font-mono);
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Крафтовая зернистая текстура на весь фон, чисто ч/б, без цвета */
+.grain-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Мягкая виньетка + волокна бумаги */
+.grain-bg::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(255,255,255,0.35), transparent 60%),
+    radial-gradient(140% 100% at 50% 110%, rgba(0,0,0,0.10), transparent 60%);
+}
+
+.torn-edge {
+  position: relative;
+}
+.torn-edge::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 8px;
+  background-image: linear-gradient(135deg, #EAE8E2 50%, transparent 50%),
+    linear-gradient(45deg, #EAE8E2 50%, transparent 50%);
+  background-size: 14px 14px;
+  background-position: 0 0;
+}
+
+.stamp {
+  display: inline-block;
+  border: 1.5px solid #161513;
+  padding: 0.15rem 0.55rem;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.68rem;
+  transform: rotate(-1.5deg);
+  white-space: nowrap;
+}
+
+.ledger-row + .ledger-row {
+  border-top: 1px dashed #B9B6AC;
+}
+
+.folder-tab {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  padding: 0.65rem 1.1rem 0.55rem;
+  border: 2px solid #161513;
+  border-bottom: none;
+  background: #DAD7CE;
+  color: #6E6B64;
+  position: relative;
+  top: 2px;
+  cursor: pointer;
+  border-radius: 5px 5px 0 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.folder-tab:hover {
+  color: #161513;
+}
+.folder-tab.active {
+  background: #EAE8E2;
+  color: #161513;
+  top: 0;
+  z-index: 2;
+}
+
+::selection {
+  background: #161513;
+  color: #EAE8E2;
+}
+
+/* Скроллбар в тон */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #B9B6AC;
+  border-radius: 6px;
+}
