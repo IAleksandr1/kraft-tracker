@@ -60,3 +60,57 @@ export async function appendEntry(entry: SheetEntry) {
     },
   });
 }
+
+const HABITS_RANGE = "Habits!A:E";
+
+export type HabitEvent = {
+  timestamp: string;
+  action: "add_habit" | "remove_habit" | "done" | "undone";
+  habitId: string;
+  habitName: string;
+  date: string;
+};
+
+export async function getHabitEvents(): Promise<HabitEvent[]> {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.GOOGLE_SHEET_ID,
+    range: HABITS_RANGE,
+  });
+
+  const rows = res.data.values || [];
+  // Первая строка — заголовок (Timestamp, Action, HabitID, HabitName, Date)
+  const [, ...data] = rows;
+
+  return data
+    .filter((row) => row && row.length > 0)
+    .map((row) => ({
+      timestamp: row[0] ?? "",
+      action: (row[1] ?? "") as HabitEvent["action"],
+      habitId: row[2] ?? "",
+      habitName: row[3] ?? "",
+      date: row[4] ?? "",
+    }));
+}
+
+export async function appendHabitEvent(event: Omit<HabitEvent, "timestamp">) {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  await sheets.spreadsheets.values.append({
+    spreadsheetId: process.env.GOOGLE_SHEET_ID,
+    range: HABITS_RANGE,
+    valueInputOption: "USER_ENTERED",
+    requestBody: {
+      values: [
+        [
+          new Date().toISOString(),
+          event.action,
+          event.habitId,
+          event.habitName,
+          event.date,
+        ],
+      ],
+    },
+  });
+}

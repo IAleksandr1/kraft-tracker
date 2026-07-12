@@ -1,71 +1,55 @@
 export type Habit = { id: string; name: string };
 export type Completions = Record<string, string[]>; // habitId -> массив ISO-дат
 
-const HABITS_KEY = "kraft-tracker:habits";
-const COMPLETIONS_KEY = "kraft-tracker:completions";
+export type HabitEvent = {
+  timestamp: string;
+  action: "add_habit" | "remove_habit" | "done" | "undone";
+  habitId: string;
+  habitName: string;
+  date: string;
+};
 
-export function getHabits(): Habit[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(HABITS_KEY);
-    return raw ? (JSON.parse(raw) as Habit[]) : [];
-  } catch {
-    return [];
+/**
+ * Собирает журнал событий (append-only лог из Google Таблицы) в текущее
+ * состояние: список привычек и отметки по дням. Порядок строк в таблице —
+ * это порядок событий во времени, поэтому просто проходим по ним по очереди.
+ */
+export function processHabitEvents(events: HabitEvent[]): {
+  habits: Habit[];
+  completions: Completions;
+} {
+  const habitsMap = new Map<string, string>();
+  const completions: Completions = {};
+
+  for (const e of events) {
+    switch (e.action) {
+      case "add_habit":
+        habitsMap.set(e.habitId, e.habitName);
+        break;
+      case "remove_habit":
+        habitsMap.delete(e.habitId);
+        delete completions[e.habitId];
+        break;
+      case "done": {
+        const dates = completions[e.habitId] || [];
+        if (!dates.includes(e.date)) dates.push(e.date);
+        completions[e.habitId] = dates;
+        break;
+      }
+      case "undone": {
+        const dates = completions[e.habitId] || [];
+        completions[e.habitId] = dates.filter((d) => d !== e.date);
+        break;
+      }
+    }
   }
-}
 
-export function saveHabits(habits: Habit[]) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(HABITS_KEY, JSON.stringify(habits));
-}
+  const habits: Habit[] = Array.from(habitsMap.entries()).map(([id, name]) => ({
+    id,
+    name,
+  }));
 
-export function getCompletions(): Completions {
-  if (typeof window === "undefined") return {};
-  try {
-    const raw = window.localStorage.getItem(COMPLETIONS_KEY);
-    return raw ? (JSON.parse(raw) as Completions) : {};
-  } catch {
-    return {};
-  }
-}
-
-export function saveCompletions(completions: Completions) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(COMPLETIONS_KEY, JSON.stringify(completions));
-}
-
-export function addHabit(name: string): Habit[] {
-  const trimmed = name.trim();
-  if (!trimmed) return getHabits();
-  const habits = getHabits();
-  const id =
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  const updated = [...habits, { id, name: trimmed }];
-  saveHabits(updated);
-  return updated;
-}
-
-export function removeHabit(id: string): Habit[] {
-  const updated = getHabits().filter((h) => h.id !== id);
-  saveHabits(updated);
-  const completions = getCompletions();
-  delete completions[id];
-  saveCompletions(completions);
-  return updated;
-}
-
-export function toggleCompletion(habitId: string, isoDate: string): Completions {
-  const completions = getCompletions();
-  const dates = completions[habitId] || [];
-  const has = dates.includes(isoDate);
-  const updatedDates = has
-    ? dates.filter((d) => d !== isoDate)
-    : [...dates, isoDate];
-  const updated = { ...completions, [habitId]: updatedDates };
-  saveCompletions(updated);
-  return updated;
+  return { habits, completions };
 }
 
 export function toLocalISODate(d: Date): string {
@@ -88,4 +72,10 @@ export function getStreak(habitId: string, completions: Completions): number {
     cursor.setDate(cursor.getDate() - 1);
   }
   return streak;
+}
+
+export function newHabitId(): string {
+  return typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }

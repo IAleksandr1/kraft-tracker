@@ -45,11 +45,11 @@ export default function Home({ onNavigate }: Props) {
         >
           <div className="flex items-baseline justify-between mb-3">
             <h3 className="font-display text-lg">ПРИВЫЧКИ</h3>
-            <span className="stamp">только в браузере</span>
+            <span className="stamp">в Google Таблице</span>
           </div>
           <p className="font-mono text-sm text-graphite mb-6">
             Отмечаешь квадратик за каждый день — видно серию подряд идущих
-            дней, без таблиц и облака. Данные остаются на этом устройстве.
+            дней. Хранится на отдельном листе той же таблицы, что и заметки.
           </p>
           <span className="font-mono text-sm border-b-2 border-ink group-hover:pl-1 transition-all">
             Открыть привычки →
@@ -58,8 +58,7 @@ export default function Home({ onNavigate }: Props) {
       </div>
 
       <p className="font-mono text-xs text-graphite/70 text-center mt-8">
-        обе вкладки работают независимо: заметки уходят в облако, привычки
-        остаются только здесь
+        обе вкладки уходят в одну Google Таблицу, каждая на свой лист
       </p>
     </div>
   );

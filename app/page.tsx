@@ -20,8 +20,8 @@ export default function Page() {
           ЖУРНАЛ.
         </h1>
         <p className="font-mono text-sm text-graphite mt-3 max-w-md">
-          Бухгалтерия улетает в Google Таблицу. Привычки остаются только
-          здесь, в браузере.
+          Заметки и привычки — всё уходит в одну Google Таблицу, на разные
+          листы.
         </p>
       </header>
 
@@ -74,7 +74,7 @@ export default function Page() {
       )}
 
       <footer className="mt-14 text-xs font-mono text-graphite/70 text-center">
-        заметки — в Google Таблице · привычки — только в этом браузере
+        заметки и привычки — в одной Google Таблице, на разных листах
       </footer>
     </main>
   );
