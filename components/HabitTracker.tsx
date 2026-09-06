@@ -132,12 +132,12 @@ export default function HabitTracker() {
         Отметь квадратик за нужный день. Данные хранятся в отдельном листе
         той же Google Таблицы, что и заметки.
       </p>
-
-      <form onSubmit={handleAdd} className="flex gap-2 mb-6 max-w-md">
+{/* flex gap-2 mb-6 max-w-md */}
+      <form onSubmit={handleAdd} className="flex gap-2 mb-6 max-w-[430px]">
         <input
           value={newHabit}
           onChange={(e) => setNewHabit(e.target.value)}
-          placeholder="Новая привычка, например «зарядка»"
+          placeholder="Новая привычка"
           className="flex-1 bg-transparent border border-line focus:border-ink outline-none p-2 font-mono text-sm"
         />
         <button
