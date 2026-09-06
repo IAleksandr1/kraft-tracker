@@ -148,7 +148,7 @@ export default function NoteForm({ onSaved }: { onSaved: () => void }) {
             </div>
           )}
         </div>
-      <br />
+<br />
         <div>
           <label className="block text-xs uppercase tracking-widest text-graphite mb-1">
             Сумма, ₽ {detectedAmount !== null && !amountTouched && "(найдена автоматически)"}
