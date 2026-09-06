@@ -80,9 +80,6 @@ export default function NoteForm({ onSaved }: { onSaved: () => void }) {
       className="bg-paper border-2 border-ink p-5 sm:p-6 relative shadow-[6px_6px_0_0_#161513]"
     >
       <div className="flex items-baseline justify-between mb-4">
-        <h2 className="font-display text-base tracking-tight">Сколько денег сейчас:</h2>
-      </div>
-      <div className="flex items-baseline justify-between mb-4">
         <h2 className="font-display text-lg tracking-tight">НОВАЯ ЗАПИСЬ</h2>
         <span className="stamp">{today()}</span>
       </div>
