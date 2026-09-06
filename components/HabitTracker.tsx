@@ -142,7 +142,7 @@ export default function HabitTracker() {
         />
         <button
           type="submit"
-          className="border-2 border-ink px-1 font-display text-xs hover:bg-ink hover:text-paper transition-colors shrink-0"
+          className="border-2 border-ink px-2 font-display text-xs hover:bg-ink hover:text-paper transition-colors shrink-0"
         >
           + ДОБАВИТЬ
         </button>
