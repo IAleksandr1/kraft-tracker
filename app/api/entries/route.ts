@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { appendEntry, getEntries } from "@/lib/sheets";
+import { appendEntry, getBalance, getEntries, setBalance } from "@/lib/sheets";
 
 export async function GET() {
   try {
@@ -30,7 +30,21 @@ export async function POST(request: Request) {
       amount: amount === null || amount === undefined ? "" : String(amount),
     });
 
-    return NextResponse.json({ ok: true });
+    // Если в заметке указана сумма — вычитаем её из текущего остатка
+    const parsedAmount =
+      amount === null || amount === undefined || amount === ""
+        ? null
+        : parseFloat(String(amount).replace(",", "."));
+
+    let balance: number | null = null;
+    if (parsedAmount !== null && !Number.isNaN(parsedAmount)) {
+      const current = await getBalance();
+      balance = current - parsedAmount;
+      await setBalance(balance);
+    }
+
+    return NextResponse.json({ ok: true, balance });
+
   } catch (error) {
     const message = error instanceof Error ? error.message : "Неизвестная ошибка";
     return NextResponse.json({ error: message }, { status: 500 });

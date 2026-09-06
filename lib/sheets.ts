@@ -114,3 +114,38 @@ export async function appendHabitEvent(event: Omit<HabitEvent, "timestamp">) {
     },
   });
 }
+
+
+// Лист "Balance" содержит одно число в ячейке A2 — текущий остаток денег.
+// A1 — заголовок "Balance" (для наглядности, программой не используется).
+const BALANCE_CELL = "Balance!A2";
+
+export async function getBalance(): Promise<number> {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.GOOGLE_SHEET_ID,
+    range: BALANCE_CELL,
+  });
+
+  const raw = res.data.values?.[0]?.[0];
+  const value =
+    raw === undefined || raw === null || raw === ""
+      ? 0
+      : parseFloat(String(raw).replace(",", "."));
+
+  return Number.isNaN(value) ? 0 : value;
+}
+
+export async function setBalance(value: number) {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: process.env.GOOGLE_SHEET_ID,
+    range: BALANCE_CELL,
+    valueInputOption: "USER_ENTERED",
+    requestBody: {
+      values: [[value]],
+    },
+  });
+}
