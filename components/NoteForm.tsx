@@ -161,7 +161,7 @@ export default function NoteForm({ onSaved }: { onSaved: () => void }) {
               setAmount(e.target.value);
               setAmountTouched(true);
             }}
-            placeholder="10"
+            placeholder="0"
             className="w-full bg-transparent border border-line focus:border-ink outline-none p-2 font-mono text-sm"
           />
         </div>
