@@ -96,7 +96,7 @@ export default function NoteForm({ onSaved }: { onSaved: () => void }) {
         className="w-full bg-transparent border border-line focus:border-ink outline-none p-3 mb-4 font-mono text-sm resize-none placeholder:text-graphite/60"
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <div className="w-fullgrid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <div>
           <label className="block text-xs uppercase tracking-widest text-graphite mb-1">
             Тема
@@ -148,7 +148,7 @@ export default function NoteForm({ onSaved }: { onSaved: () => void }) {
             </div>
           )}
         </div>
-
+      <br />
         <div>
           <label className="block text-xs uppercase tracking-widest text-graphite mb-1">
             Сумма, ₽ {detectedAmount !== null && !amountTouched && "(найдена автоматически)"}
